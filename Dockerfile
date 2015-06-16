@@ -1,10 +1,9 @@
 FROM ubuntu
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y
+### Install Oracle Java 8 from https://github.com/dockerfile/java/blob/master/oracle-java8/Dockerfile
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common 
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common 
-
-# Install Oracle Java 8 from https://github.com/dockerfile/java/blob/master/oracle-java8/Dockerfile
 RUN \
   echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
   add-apt-repository -y ppa:webupd8team/java && \
@@ -15,6 +14,7 @@ RUN \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
+### Install Ruby from https://github.com/docker-library/ruby/blob/master/2.2/Dockerfile
 ENV RUBY_MAJOR 2.2
 ENV RUBY_VERSION 2.2.2
 ENV RUBY_DOWNLOAD_SHA256 5ffc0f317e429e6b29d4a98ac521c3ce65481bfd22a8cf845fa02a7b113d9b44
@@ -53,6 +53,7 @@ RUN gem install bundler --version "$BUNDLER_VERSION" \
 # don't create ".bundle" in all our apps
 ENV BUNDLE_APP_CONFIG $GEM_HOME
 
+### Install/Setup S3_website
 RUN gem install s3_website
 # get .jar installed in image
 RUN s3_website push --dry-run; exit 0
